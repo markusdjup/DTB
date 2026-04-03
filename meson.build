@@ -10,7 +10,10 @@ std_lib_facilities_dep = dependency('std_lib_facilities', fallback: ['std_lib_fa
 
 compiler_flags = ['-Wconversion', '-fdiagnostics-color=always', '-Werror=return-type', '-static']
 
-src = ['main.cpp']
+src = [
+  'main.cpp',
+  'core/LedgerSystem.cpp',
+]
 
 if host_machine.system() == 'windows'
   ld_flags = ['-static', '-lstdc++exp']
