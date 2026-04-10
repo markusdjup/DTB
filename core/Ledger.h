@@ -2,18 +2,24 @@
 #include "account/BankAccount.h"
 #include "account/SavingsAccount.h"
 #include "account/CheckingAccount.h"
+#include "LedgerSerializer.h"
 #include "Transaction.h"
 #include <vector>
 #include <memory>
 
 class Ledger
 {
+friend void LedgerSerializer::save(const Ledger&);
+friend void LedgerSerializer::load(Ledger&);
 private:
     std::vector<std::unique_ptr<BankAccount>> accounts;
     std::vector<Transaction> transactionLog;
     long long nextAccountID = 1;
     bool ownsAccount(const BankAccount& account) const;
 public:
+    Ledger() { LedgerSerializer::load(*this); }
+    ~Ledger() { LedgerSerializer::save(*this); }
+
     // account creation
     SavingsAccount& createSavingsAccount(const std::string& initialOwner, double initialInterestRate, long long initialBalance = 0);
     CheckingAccount& createCheckingAccount(const std::string& initialOwner, long long initialOverdraftLimit, long long initialBalance = 0);

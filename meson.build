@@ -15,7 +15,8 @@ src = [
   'core/Ledger.cpp',
   'core/account/BankAccount.cpp',
   'core/account/CheckingAccount.cpp',
-  'core/account/SavingsAccount.cpp'
+  'core/account/SavingsAccount.cpp',
+  'core/LedgerSerializer.cpp'
 ]
 
 if host_machine.system() == 'windows'

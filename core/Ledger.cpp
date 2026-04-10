@@ -1,5 +1,5 @@
 #include "Ledger.h"
-#include "LedgerExceptions.h"
+#include "exceptions/LedgerExceptions.h"
 #include <stdexcept>
 #include <optional>
 
@@ -15,6 +15,8 @@ bool Ledger::ownsAccount(const BankAccount& account) const
 // account creation
 SavingsAccount& Ledger::createSavingsAccount(const std::string& initialOwner, double initialInterestRate, long long initialBalance)
 {
+    if (!isValidOwnerName(initialOwner))
+        throw InvalidOwnerName();
     accounts.push_back(std::make_unique<SavingsAccount>(nextAccountID++, initialOwner, initialInterestRate, initialBalance));
     return static_cast<SavingsAccount&>(*accounts.back());
 }
