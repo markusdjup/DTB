@@ -3,7 +3,7 @@
 
 class BankAccount
 {
-    friend class LedgerSystem;
+    friend class Ledger;
 private:
     void setBalance(long long newBalance) { balance = newBalance; }
 protected:

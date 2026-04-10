@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-class LedgerSystem
+class Ledger
 {
 private:
     std::vector<std::unique_ptr<BankAccount>> accounts;

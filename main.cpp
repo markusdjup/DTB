@@ -1,11 +1,11 @@
-#include "core/LedgerSystem.h"
+#include "core/Ledger.h"
 #include <iostream>
 
 int main() {
 
     // TESTING!!!!!!!!
     std::cout << "Starting up" << std::endl;
-    LedgerSystem ls;
+    Ledger ls;
     SavingsAccount& sa = ls.createSavingsAccount("Markus Djup", 0.04);
     std::cout << "SA Owner: " << sa.getOwner() << std::endl;
     std::cout << "SA ID: " << sa.getID() << std::endl;
