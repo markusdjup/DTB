@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 
 struct Transaction
 {
@@ -11,6 +12,6 @@ struct Transaction
     // member variables are const to make transactions immutable
     const Type type; 
     const long long amount; // amount in øre/cents to avoid float-errors
-    const long long fromID;
-    const long long toID;
+    const std::optional<long long> fromID;
+    const std::optional<long long> toID;
 };

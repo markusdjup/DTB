@@ -15,9 +15,9 @@ public:
     : id(id), balance(initialBalance), owner(initialOwner) {}
     virtual ~BankAccount() {}
     
-    long long getID() const { return id; }
-    std::string getOwner() const { return owner; }
-    void setOwner(const std::string& newOwner) { owner = newOwner; }
-    long long getBalance() const { return balance; }
-    virtual bool canWithdraw(long long amount) const { return amount <= balance; }
+    long long getID() const;
+    std::string getOwner() const;
+    void setOwner(const std::string& newOwner);
+    long long getBalance() const;
+    virtual bool canWithdraw(long long amount) const;
 };

@@ -60,8 +60,8 @@ int main() {
             case Transaction::Type::Interest:   std::cout << "  Interest   "; break;
         }
         std::cout << "| Amount: " << t.amount
-                  << " | From: " << t.fromID
-                  << " | To: "   << t.toID
+                  << " | From: " << (t.fromID.has_value() ? std::to_string(t.fromID.value()) : "N/A")
+                  << " | To: "   << (t.toID.has_value()   ? std::to_string(t.toID.value())   : "N/A")
                   << std::endl;
     }
     return 0;

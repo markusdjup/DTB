@@ -1,5 +1,6 @@
 #include "LedgerSystem.h"
 #include <stdexcept>
+#include <optional>
 
 // checks if an account is actually owned by the ledger system
 bool LedgerSystem::ownsAccount(const BankAccount& account) const
@@ -26,11 +27,11 @@ CheckingAccount& LedgerSystem::createCheckingAccount(const std::string& initialO
 void LedgerSystem::deposit(BankAccount& account, long long amount)
 {
     if (!ownsAccount(account))
-        throw std::invalid_argument("Account not in LedgerSystem"); // change to specific exceptions later!
+        throw std::invalid_argument("Account not in LedgerSystem"); // change to specific exceptions later
     if (amount <= 0)
         throw std::invalid_argument("Deposit amount must be positive");
     account.setBalance(account.getBalance() + amount);
-    transactionLog.push_back({Transaction::Type::Deposit, amount, -1, account.getID()});    // use nullopt here?
+    transactionLog.push_back({Transaction::Type::Deposit, amount, std::nullopt, account.getID()});
 }
 void LedgerSystem::withdraw(BankAccount& account, long long amount)
 {
@@ -41,7 +42,7 @@ void LedgerSystem::withdraw(BankAccount& account, long long amount)
     if (!account.canWithdraw(amount))
         throw std::runtime_error("Incufficient funds");
     account.setBalance(account.getBalance() - amount);
-    transactionLog.push_back({Transaction::Type::Withdrawal, amount, account.getID(), -1});
+    transactionLog.push_back({Transaction::Type::Withdrawal, amount, account.getID(), std::nullopt});
 }
 void LedgerSystem::transfer(BankAccount& from, BankAccount& to, long long amount) 
 {
@@ -63,3 +64,7 @@ void LedgerSystem::applyInterest(SavingsAccount& account)
     account.setBalance(account.getBalance() + interest);
     transactionLog.push_back({Transaction::Type::Interest, interest, -1, account.getID()});
 }
+
+// getters
+const std::vector<std::unique_ptr<BankAccount>>& LedgerSystem::getAccounts() const { return accounts; }
+const std::vector<Transaction>& LedgerSystem::getTransactionLog() const { return transactionLog; }

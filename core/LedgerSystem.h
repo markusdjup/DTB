@@ -25,6 +25,6 @@ public:
     void applyInterest(SavingsAccount& account);
 
     // getters
-    const std::vector<std::unique_ptr<BankAccount>>& getAccounts() const { return accounts; }
-    const std::vector<Transaction>& getTransactionLog() const { return transactionLog; }
+    const std::vector<std::unique_ptr<BankAccount>>& getAccounts() const;
+    const std::vector<Transaction>& getTransactionLog() const;
 };

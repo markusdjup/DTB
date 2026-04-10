@@ -13,6 +13,9 @@ compiler_flags = ['-Wconversion', '-fdiagnostics-color=always', '-Werror=return-
 src = [
   'main.cpp',
   'core/LedgerSystem.cpp',
+  'core/account/BankAccount.cpp',
+  'core/account/CheckingAccount.cpp',
+  'core/account/SavingsAccount.cpp'
 ]
 
 if host_machine.system() == 'windows'
