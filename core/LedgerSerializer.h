@@ -3,11 +3,14 @@
 
 class Ledger;
 
-namespace LedgerSerializer 
+class LedgerSerializer 
 {
-    const std::string accountsPath = "data/accounts.csv";
-    const std::string transactionLogPath = "data/transactionLog.csv";
+private:
+    static const std::string usersPath;
+    static const std::string accountsPath;
+    static const std::string transactionLogPath;
 
-    void save(const Ledger& ledger);
-    void load(Ledger& ledger);
-}
+public:
+    static void save(const Ledger& ledger);
+    static void load(Ledger& ledger);
+};

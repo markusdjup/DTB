@@ -6,6 +6,8 @@ int main() {
     // TESTING!!!!!!!!
     std::cout << "Starting up" << std::endl;
     Ledger ls;
+    ls.registerUser("Markus Djup", "markus123");
+    ls.registerUser("Elon Musk", "muskman69");
     SavingsAccount& sa = ls.createSavingsAccount("Markus Djup", 0.04);
     std::cout << "SA Owner: " << sa.getOwner() << std::endl;
     std::cout << "SA ID: " << sa.getID() << std::endl;

@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <optional>
 
-// checks if an account is actually owned by the ledger system
+// checks if an account is actually owned by the ledger
 bool Ledger::ownsAccount(const BankAccount& account) const
 {
     for (const auto& acc : accounts)
@@ -12,16 +12,55 @@ bool Ledger::ownsAccount(const BankAccount& account) const
     return false;
 };
 
+// user functions
+bool Ledger::userExists(const std::string& name) const 
+{
+    for (const User& u : users) {
+        if (u.name == name) 
+            return true;
+    }
+    return false;
+}
+bool Ledger::loginUser(const std::string& name, const std::string& password) const
+{
+    for (const User& u : users) {
+        if (u.name == name && u.password == password) 
+            return true;
+    }
+    return false;
+}
+void Ledger::registerUser(const std::string& name, const std::string& password) 
+{
+    if (!isValidUserName(name)) 
+        throw InvalidUserName(name + " is not a valid username");   // specify rules later (maybe)
+    if (!isValidPassword(password)) 
+        throw InvalidPassword("Invalid password");                  // same here
+    if (userExists(name)) 
+        throw UserAlreadyExists(name + " is already a registered user");
+    users.push_back({name, password});
+};
+std::vector<BankAccount*> Ledger::getAccountsForUser(const std::string& name) const
+{
+    std::vector<BankAccount*> userAccounts;
+    for (const auto& acc : accounts) {
+        if (acc->getOwner() == name)
+            userAccounts.push_back(acc.get());
+    }
+    return userAccounts;
+}
+
 // account creation
 SavingsAccount& Ledger::createSavingsAccount(const std::string& initialOwner, double initialInterestRate, long long initialBalance)
 {
-    if (!isValidOwnerName(initialOwner))
-        throw InvalidOwnerName();
+    if (!userExists(initialOwner))
+        throw UserNotInLedger(initialOwner + " is not a registered user");
     accounts.push_back(std::make_unique<SavingsAccount>(nextAccountID++, initialOwner, initialInterestRate, initialBalance));
     return static_cast<SavingsAccount&>(*accounts.back());
 }
 CheckingAccount& Ledger::createCheckingAccount(const std::string& initialOwner, long long initialOverdraftLimit, long long initialBalance)
 {
+    if (!userExists(initialOwner))
+        throw UserNotInLedger(initialOwner + " is not a registered user");
     accounts.push_back(std::make_unique<CheckingAccount>(nextAccountID++, initialOwner, initialOverdraftLimit, initialBalance));
     return static_cast<CheckingAccount&>(*accounts.back());
 }
@@ -71,5 +110,13 @@ void Ledger::applyInterest(SavingsAccount& account)
 }
 
 // getters
+const std::vector<User>& Ledger::getUsers() const { return users; };
 const std::vector<std::unique_ptr<BankAccount>>& Ledger::getAccounts() const { return accounts; }
 const std::vector<Transaction>& Ledger::getTransactionLog() const { return transactionLog; }
+BankAccount* Ledger::getAccountByID(long long id) const {
+    for (const auto& acc : accounts) {
+        if (acc->getID() == id)
+            return acc.get();
+    }
+    return nullptr; // returns nullptr if the account isn't found in accounts
+}
