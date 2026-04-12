@@ -16,7 +16,10 @@ src = [
   'core/account/BankAccount.cpp',
   'core/account/CheckingAccount.cpp',
   'core/account/SavingsAccount.cpp',
-  'core/LedgerSerializer.cpp'
+  'core/LedgerSerializer.cpp',
+  'gui/LoginScreen.cpp',
+  'gui/DashboardScreen.cpp',
+  'gui/CreateAccountScreen.cpp'
 ]
 
 if host_machine.system() == 'windows'

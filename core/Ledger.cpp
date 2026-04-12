@@ -32,12 +32,13 @@ bool Ledger::loginUser(const std::string& name, const std::string& password) con
 void Ledger::registerUser(const std::string& name, const std::string& password) 
 {
     if (!isValidUserName(name)) 
-        throw InvalidUserName(name + " is not a valid username");   // specify rules later (maybe)
+        throw InvalidUserName("Invalid username. Please only use letters, spaces or dashes, and keep length between 5 and 100 characters");
     if (!isValidPassword(password)) 
-        throw InvalidPassword("Invalid password");                  // same here
+        throw InvalidPassword("Invalid password. Please keep length between 6 and 30 characters");
     if (userExists(name)) 
         throw UserAlreadyExists(name + " is already a registered user");
     users.push_back({name, password});
+    LedgerSerializer::save(*this);
 };
 std::vector<BankAccount*> Ledger::getAccountsForUser(const std::string& name) const
 {
@@ -56,6 +57,7 @@ SavingsAccount& Ledger::createSavingsAccount(const std::string& initialOwner, do
         throw UserNotInLedger(initialOwner + " is not a registered user");
     accounts.push_back(std::make_unique<SavingsAccount>(nextAccountID++, initialOwner, initialInterestRate, initialBalance));
     return static_cast<SavingsAccount&>(*accounts.back());
+    LedgerSerializer::save(*this);
 }
 CheckingAccount& Ledger::createCheckingAccount(const std::string& initialOwner, long long initialOverdraftLimit, long long initialBalance)
 {
@@ -63,6 +65,7 @@ CheckingAccount& Ledger::createCheckingAccount(const std::string& initialOwner, 
         throw UserNotInLedger(initialOwner + " is not a registered user");
     accounts.push_back(std::make_unique<CheckingAccount>(nextAccountID++, initialOwner, initialOverdraftLimit, initialBalance));
     return static_cast<CheckingAccount&>(*accounts.back());
+    LedgerSerializer::save(*this);
 }
 
 // transactions
@@ -74,6 +77,7 @@ void Ledger::deposit(BankAccount& account, long long amount)
         throw InvalidAmount("Deposited amount must be positive");
     account.setBalance(account.getBalance() + amount);
     transactionLog.push_back({Transaction::Type::Deposit, amount, std::nullopt, account.getID()});
+    LedgerSerializer::save(*this);
 }
 void Ledger::withdraw(BankAccount& account, long long amount)
 {
@@ -85,6 +89,7 @@ void Ledger::withdraw(BankAccount& account, long long amount)
         throw InsufficientFunds();
     account.setBalance(account.getBalance() - amount);
     transactionLog.push_back({Transaction::Type::Withdrawal, amount, account.getID(), std::nullopt});
+    LedgerSerializer::save(*this);
 }
 void Ledger::transfer(BankAccount& from, BankAccount& to, long long amount) 
 {
@@ -99,6 +104,7 @@ void Ledger::transfer(BankAccount& from, BankAccount& to, long long amount)
     from.setBalance(from.getBalance() - amount);
     to.setBalance(to.getBalance() + amount);
     transactionLog.push_back({Transaction::Type::Transfer, amount, from.getID(), to.getID()});
+    LedgerSerializer::save(*this);
 }
 void Ledger::applyInterest(SavingsAccount& account)
 {
@@ -107,6 +113,7 @@ void Ledger::applyInterest(SavingsAccount& account)
     long long interest = account.calculateInterest();
     account.setBalance(account.getBalance() + interest);
     transactionLog.push_back({Transaction::Type::Interest, interest, std::nullopt, account.getID()});
+    LedgerSerializer::save(*this);
 }
 
 // getters

@@ -5,7 +5,7 @@
 
 inline bool isValidUserName(const std::string& name) 
 {
-    return name.length() >= 3 // user name must be between 3
+    return name.length() >= 5 // user name must be between 5
     && name.length() <= 100   // and 100 in length
     && std::all_of(name.begin(), name.end(), [](char c) {
         // checks if all chars in name are letters, spaces or dashes (might change these rules)
