@@ -26,8 +26,6 @@ private:
     TDT4102::Button depositButton;
     TDT4102::Button withdrawButton;
     TDT4102::Button transferButton;
-    
-    // sends user to a different screen
     TDT4102::Button newAccountButton;
     TDT4102::Button logoutButton;
 
@@ -38,14 +36,14 @@ private:
     void refreshAccounts();
     BankAccount* getSelectedAccount() const;
     long long parseAmount() const;
-    static std::string formatAmount(long long amount);
     void setStatus(const std::string& message, TDT4102::Color color);
 
     void handleDeposit();
     void handleWithdraw();
     void handleTransfer();
-    void handleNewAccount();
-    void handleLogout();
+
+    void handleNewAccount(); // sends user to CreateAccountScreen
+    void handleLogout(); // sends user to LoginScreen
 
     void drawAccountList();
 };

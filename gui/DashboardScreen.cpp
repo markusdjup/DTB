@@ -1,16 +1,11 @@
 #include "DashboardScreen.h"
+#include "CreateAccountScreen.h"
+#include "Utils.h"
 #include "../core/account/SavingsAccount.h"
 #include "../core/account/CheckingAccount.h"
 
 const int screenWidth = 1280;
 const int screenHeight = 720;
-
-std::string DashboardScreen::formatAmount(long long amount) {
-    long long kr = amount / 100;
-    long long ore = std::abs(amount % 100); // if amount is negative, only kr should have minus sign
-    std::string padding = (ore < 10 ? "0" : ""); // when ore is lower than 10, we need to add a zero in front
-    return std::to_string(kr) + "," + padding + std::to_string(ore) + " kr";
-}
 
 DashboardScreen::DashboardScreen(Ledger& ledger, const std::string username)
 :   AnimationWindow(0, 30, screenWidth, screenHeight - 30, "DTB Dashboard - " + username),
@@ -42,8 +37,8 @@ DashboardScreen::DashboardScreen(Ledger& ledger, const std::string username)
     depositButton.setCallback(std::bind(&DashboardScreen::handleDeposit, this));
     withdrawButton.setCallback(std::bind(&DashboardScreen::handleWithdraw, this));
     transferButton.setCallback(std::bind(&DashboardScreen::handleTransfer, this));
-    // newAccountButton.setCallback(std::bind(&DashboardScreen::handleNewAccount, this));
-    // logoutButton.setCallback(std::bind(&DashboardScreen::handleLogout, this));
+    newAccountButton.setCallback(std::bind(&DashboardScreen::handleNewAccount, this));
+    logoutButton.setCallback(std::bind(&DashboardScreen::handleLogout, this));
 
     while (!should_close()) {
         draw_rectangle({0, 0}, screenWidth, screenHeight, TDT4102::Color::light_gray);
@@ -87,44 +82,7 @@ BankAccount* DashboardScreen::getSelectedAccount() const
 
 long long DashboardScreen::parseAmount() const
 {
-    std::string amountText = amountField.getText(); // in kr and øre
-
-    // find separator
-    size_t sepPos = amountText.find(',');
-    if (sepPos == std::string::npos)
-        sepPos = amountText.find('.');
-
-    try {
-        // no separator
-        if (sepPos == std::string::npos) {
-            size_t pos;
-            long long result = std::stoll(amountText, &pos);
-            if (pos != amountText.size()) return -1; // checks for trailing characters
-            return result * 100;
-        }
-
-        // separator
-        std::string krText = amountText.substr(0, sepPos);
-        std::string oreText = amountText.substr(sepPos + 1);
-        
-        // øreText can't be empty or greater than 2 digits
-        if (oreText.empty() || oreText.size() > 2) {
-            return -1;
-        }
-        if (oreText.size() == 1) // "0,2" should become 20, not 2
-            oreText += "0";
-        
-        size_t krPos, orePos;
-        long long kr  = std::stoll(krText,  &krPos);
-        long long ore = std::stoll(oreText, &orePos);
-        // checks if entire string was consumed in both parts
-        if (krPos != krText.size() || orePos != oreText.size()) 
-            return -1;
-
-        return kr * 100 + ore;
-    } catch(...) {
-        return -1;
-    }
+    return parseKr(amountField.getText());
 }
 
 void DashboardScreen::setStatus(const std::string& newStatusMessage, TDT4102::Color newStatusColor)
@@ -221,4 +179,14 @@ void DashboardScreen::handleTransfer()
     } catch (const std::exception& e) {
         setStatus(e.what(), TDT4102::Color::red);
     }
+}
+
+void DashboardScreen::handleNewAccount()
+{
+    // send user to CreateAccountScreen
+}
+
+void DashboardScreen::handleLogout()
+{
+    // send user to LoginScreen
 }

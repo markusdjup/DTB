@@ -19,7 +19,8 @@ src = [
   'core/LedgerSerializer.cpp',
   'gui/LoginScreen.cpp',
   'gui/DashboardScreen.cpp',
-  'gui/CreateAccountScreen.cpp'
+  'gui/CreateAccountScreen.cpp',
+  'gui/Utils.cpp'
 ]
 
 if host_machine.system() == 'windows'

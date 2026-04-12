@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils.h"
 #include "AnimationWindow.h"
 #include "widgets/Button.h"
 #include "widgets/TextInput.h"
@@ -15,7 +16,6 @@ public:
 private:
     Ledger& ledger;
     std::string username;
-
     std::vector<std::string> typeOptions;
     TDT4102::DropdownList typeDropdown;
     TDT4102::TextInput initialBalanceField;
@@ -27,5 +27,7 @@ private:
 
     bool isSavingsSelected() const;
     void setStatus(const std::string& message, TDT4102::Color color);
-    void handleConfirm();
+    
+    void handleConfirm(); // sends user to DashboardScreen
+    void handleCancel(); // sends user to DashboardScreen
 };

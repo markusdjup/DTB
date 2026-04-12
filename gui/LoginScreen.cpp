@@ -42,11 +42,13 @@ void LoginScreen::handleLogin()
     std::string name = usernameField.getText();
     std::string password = passwordField.getText();
 
-    if (ledger.loginUser(name, password))
-        setStatus("Successfully logged in as " + name, TDT4102::Color::green);
-        // and send to dashboard
-    else
+    if (ledger.loginUser(name, password)) {
+        setStatus("Successfully logged in", TDT4102::Color::green);
+        // send user to DashboardScreen
+    }
+    else {
         setStatus("Wrong username or password", TDT4102::Color::red);
+    }
 }
 
 void LoginScreen::handleRegister()
