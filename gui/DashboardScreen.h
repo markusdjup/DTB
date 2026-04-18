@@ -8,14 +8,17 @@
 #include <vector>
 #include <functional>
 #include <cmath>
+#include <optional>
 
 class DashboardScreen : public TDT4102::AnimationWindow
 {
 public:
-    DashboardScreen(Ledger& ledger, const std::string username);
+    DashboardScreen(Ledger& ledger, User& user);
+    std::optional<std::string> nextScreen = "Dashboard";
+
 private:
     Ledger& ledger;
-    std::string username;
+    User& user;
 
     std::vector<BankAccount*> userAccounts;
     std::vector<std::string> accountLabels;

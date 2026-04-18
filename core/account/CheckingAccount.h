@@ -8,7 +8,7 @@ private:
     long long overdraftLimit;
     void setOverdraftLimit(long long newOverdraftLimit);
 public:
-    CheckingAccount(long long id, const std::string& initialOwner, long long initialBalance = 0, long long initialOverdraftLimit = 0)
+    CheckingAccount(long long id, const std::string& initialOwner, long long initialOverdraftLimit = 0, long long initialBalance = 0)
     : BankAccount(id, initialOwner, initialBalance), overdraftLimit(initialOverdraftLimit) {}
 
     long long getOverdraftLimit() const;

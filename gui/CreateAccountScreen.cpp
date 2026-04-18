@@ -4,10 +4,10 @@
 const int screenWidth = 1280;
 const int screenHeight = 720;
 
-CreateAccountScreen::CreateAccountScreen(Ledger& ledger, const std::string& username)
+CreateAccountScreen::CreateAccountScreen(Ledger& ledger, User& user)
     : AnimationWindow(0, 30, screenWidth, screenHeight - 30, "New Account"),
       ledger(ledger),
-      username(username),
+      user(user),
       typeOptions({"Savings account", "Checking account"}),
       typeDropdown{{screenWidth/2 - 205, screenHeight/2 - 100}, 200, 30, typeOptions},
       initialBalanceField{{screenWidth/2 + 5, screenHeight/2 - 100}, 200, 30, "Initial balance (kr)"},
@@ -22,9 +22,10 @@ CreateAccountScreen::CreateAccountScreen(Ledger& ledger, const std::string& user
     add(cancelButton);
 
     confirmButton.setCallback(std::bind(&CreateAccountScreen::handleConfirm, this));
-    cancelButton.setCallback([this]() { close(); }); // check what this does
+    cancelButton.setCallback(std::bind(&CreateAccountScreen::handleCancel, this));
 
     while (!should_close()) {
+        if (nextScreen != "CreateAccount") { close(); }
         draw_rectangle({0, 0}, screenWidth, screenHeight, TDT4102::Color::light_gray);
         std::string header = "Create account";
         draw_text({screenWidth/2 - static_cast<int>(header.size() * 8.6), 200}, header, TDT4102::Color::dark_cyan, 40, TDT4102::Font::arial_bold);
@@ -32,6 +33,8 @@ CreateAccountScreen::CreateAccountScreen(Ledger& ledger, const std::string& user
             draw_text({screenWidth/2 - static_cast<int>(statusMessage.size() * 4.3), screenHeight/2 + 50}, statusMessage, statusColor);
         next_frame();
     }
+    if (nextScreen == "CreateAccount")
+        nextScreen = std::nullopt;
 }
 
 bool CreateAccountScreen::isSavingsSelected() const
@@ -59,12 +62,12 @@ void CreateAccountScreen::handleConfirm()
     try {
         if (isSavingsSelected()) {
             double interestRate = 0.05; // 5%
-            ledger.createSavingsAccount(username, interestRate, initialBalance);
+            ledger.createSavingsAccount(user.name, interestRate, initialBalance);
         } else {
             long long overdraftLimit = 1000000; // 1000 kr
-            ledger.createCheckingAccount(username, overdraftLimit, initialBalance);
-        // send user to DashboardScreen
+            ledger.createCheckingAccount(user.name, overdraftLimit, initialBalance);
         }
+        nextScreen = "Dashboard";
     } catch (const std::exception& e) {
         setStatus(e.what(), TDT4102::Color::red);
     }
@@ -72,5 +75,5 @@ void CreateAccountScreen::handleConfirm()
 
 void CreateAccountScreen::handleCancel()
 {
-    // send user to DashboardScreen
+    nextScreen = "Dashboard";
 }

@@ -7,11 +7,11 @@
 const int screenWidth = 1280;
 const int screenHeight = 720;
 
-DashboardScreen::DashboardScreen(Ledger& ledger, const std::string username)
-:   AnimationWindow(0, 30, screenWidth, screenHeight - 30, "DTB Dashboard - " + username),
+DashboardScreen::DashboardScreen(Ledger& ledger, User& user)
+:   AnimationWindow(0, 30, screenWidth, screenHeight - 30, "DTB Dashboard - " + user.name),
     ledger(ledger),
-    username(username),
-    userAccounts(ledger.getAccountsForUser(username)),
+    user(user),
+    userAccounts(ledger.getAccountsForUser(user.name)),
     accountLabels(buildAccountLabels()),
     
     accountDropdown{{screenWidth/2 - 265, screenHeight/2 - 200}, 200, 30, accountLabels},
@@ -41,14 +41,17 @@ DashboardScreen::DashboardScreen(Ledger& ledger, const std::string username)
     logoutButton.setCallback(std::bind(&DashboardScreen::handleLogout, this));
 
     while (!should_close()) {
+        if (nextScreen != "Dashboard") { close(); }
         draw_rectangle({0, 0}, screenWidth, screenHeight, TDT4102::Color::light_gray);
-        std::string header = "Logged in as: " + username;
+        std::string header = "Logged in as: " + user.name;
         draw_text({screenWidth/2 - static_cast<int>(header.size() * 4.3), 10}, header, TDT4102::Color::green, 20U, TDT4102::Font::arial_bold);
         drawAccountList();
         if (!statusMessage.empty())
             draw_text({screenWidth/2 - static_cast<int>(statusMessage.size() * 4.3), screenHeight/2 - 100} , statusMessage, statusColor);
         next_frame();
     }
+    if (nextScreen == "Dashboard")
+        nextScreen = std::nullopt;
 }
 
 std::vector<std::string> DashboardScreen::buildAccountLabels() const
@@ -65,7 +68,7 @@ std::vector<std::string> DashboardScreen::buildAccountLabels() const
 
 void DashboardScreen::refreshAccounts()
 {
-    userAccounts = ledger.getAccountsForUser(username);
+    userAccounts = ledger.getAccountsForUser(user.name);
     accountLabels = buildAccountLabels();
     accountDropdown.setOptions(accountLabels);
 }
@@ -94,12 +97,12 @@ void DashboardScreen::setStatus(const std::string& newStatusMessage, TDT4102::Co
 void DashboardScreen::drawAccountList()
 {
     std::string line = "Your accounts";
-    draw_text({20, 20}, line, TDT4102::Color::dark_cyan, 30U, TDT4102::Font::arial_bold);
-    int y = 60;
+    draw_text({screenWidth/2 - 55, screenHeight/2 - 90}, line, TDT4102::Color::dark_cyan, 30U, TDT4102::Font::arial_bold);
+    int y = screenHeight/2 - 50;
     for (const BankAccount* acc : userAccounts) {
         std::string type = dynamic_cast<const SavingsAccount*>(acc) ? "Savings account  " : "Checking account";
         std::string line = "#" + std::to_string(acc->getID()) + " | " + type + " | " + formatAmount(acc->getBalance());
-        draw_text({20, y}, line, TDT4102::Color::black);
+        draw_text({screenWidth/2 - 55, y}, line, TDT4102::Color::black);
         y += 22;
     }
 }
@@ -164,7 +167,7 @@ void DashboardScreen::handleTransfer()
         toID = std::stoll(toAccountIDField.getText());
     } catch (...) {} // if an exception occurs, toID remains -1
     BankAccount* to = ledger.getAccountByID(toID); // getAccountByID returns nullptr if the ID is invalid
-    if (to == nullptr || !(to->getOwner() == username)) {
+    if (to == nullptr || !(to->getOwner() == user.name)) {
         setStatus("Invalid destination account ID", TDT4102::Color::red);
         return;
     }
@@ -183,10 +186,10 @@ void DashboardScreen::handleTransfer()
 
 void DashboardScreen::handleNewAccount()
 {
-    // send user to CreateAccountScreen
+    nextScreen = "CreateAccount";
 }
 
 void DashboardScreen::handleLogout()
 {
-    // send user to LoginScreen
+    nextScreen = "Login";
 }

@@ -22,6 +22,7 @@ LoginScreen::LoginScreen(Ledger& ledger)
     TDT4102::Image dtb_icon("./images/dtb_icon.png");
 
     while (!should_close()) {
+        if (nextScreen != "Login") { close(); }
         draw_rectangle({0, 0}, screenWidth, screenHeight, TDT4102::Color::light_gray);
         draw_image({screenWidth/2 - 429*1/3, 100}, dtb_icon, 429*2/3, 211*2/3);
         draw_text({screenWidth/2 - 150, screenHeight/2 - 110}, "Welcome to Den Trønderske Bank", TDT4102::Color::dark_cyan, 20U, TDT4102::Font::arial_bold);
@@ -29,6 +30,8 @@ LoginScreen::LoginScreen(Ledger& ledger)
             draw_text({screenWidth/2 - static_cast<int>(statusMessage.size() * 4.3), screenHeight/2 + 100}, statusMessage, statusColor);
         next_frame();
     }
+    if (nextScreen == "Login")
+        nextScreen = std::nullopt;
 }
 
 void LoginScreen::setStatus(std::string newStatusMessage, TDT4102::Color newStatusColor)
@@ -44,7 +47,8 @@ void LoginScreen::handleLogin()
 
     if (ledger.loginUser(name, password)) {
         setStatus("Successfully logged in", TDT4102::Color::green);
-        // send user to DashboardScreen
+        loggedInUser = User(name, password);
+        nextScreen = "Dashboard";
     }
     else {
         setStatus("Wrong username or password", TDT4102::Color::red);

@@ -22,4 +22,6 @@ private:
     void handleLogin(); // sends user to DashboardScreen
 public:
     LoginScreen(Ledger& ledger);
+    std::optional<std::string> nextScreen = "Login";
+    std::optional<User> loggedInUser = std::nullopt;
 };

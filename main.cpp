@@ -6,20 +6,31 @@
 
 int main()
 {
-
     Ledger l;
-    LoginScreen login(l);
-    login.wait_for_close();
-    std::string username = "";
+    User u;
+    std::optional<std::string> nextScreen = "Login";
 
-    DashboardScreen dashboard(l, username);
-    dashboard.wait_for_close();
-
-    CreateAccountScreen create(l, username);
-    create.wait_for_close();
-
-    DashboardScreen dashboard(l, username);
-    dashboard.wait_for_close();
+    while (nextScreen.has_value())
+    {
+        if (nextScreen == "Login")
+        {
+            LoginScreen login(l);
+            nextScreen = login.nextScreen;
+            if (login.loggedInUser.has_value())
+                u = login.loggedInUser.value();
+        }
+        else if (nextScreen == "Dashboard")
+        {
+            DashboardScreen dashboard(l, u);
+            nextScreen = dashboard.nextScreen;
+        }
+        else if (nextScreen == "CreateAccount")
+        {
+            CreateAccountScreen create(l, u);
+            nextScreen = create.nextScreen;
+        }
+        else { break; }
+    }
 
     return 0;
 }

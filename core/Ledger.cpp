@@ -56,16 +56,16 @@ SavingsAccount& Ledger::createSavingsAccount(const std::string& initialOwner, do
     if (!userExists(initialOwner))
         throw UserNotInLedger(initialOwner + " is not a registered user");
     accounts.push_back(std::make_unique<SavingsAccount>(nextAccountID++, initialOwner, initialInterestRate, initialBalance));
-    return static_cast<SavingsAccount&>(*accounts.back());
     LedgerSerializer::save(*this);
+    return static_cast<SavingsAccount&>(*accounts.back());
 }
 CheckingAccount& Ledger::createCheckingAccount(const std::string& initialOwner, long long initialOverdraftLimit, long long initialBalance)
 {
     if (!userExists(initialOwner))
         throw UserNotInLedger(initialOwner + " is not a registered user");
     accounts.push_back(std::make_unique<CheckingAccount>(nextAccountID++, initialOwner, initialOverdraftLimit, initialBalance));
-    return static_cast<CheckingAccount&>(*accounts.back());
     LedgerSerializer::save(*this);
+    return static_cast<CheckingAccount&>(*accounts.back());
 }
 
 // transactions

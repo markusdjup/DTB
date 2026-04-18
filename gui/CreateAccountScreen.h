@@ -11,11 +11,11 @@
 
 class CreateAccountScreen : public TDT4102::AnimationWindow {
 public:
-    CreateAccountScreen(Ledger& ledger, const std::string& username);
-
+    CreateAccountScreen(Ledger& ledger, User& user);
+    std::optional<std::string> nextScreen = "CreateAccount";
 private:
     Ledger& ledger;
-    std::string username;
+    User& user;
     std::vector<std::string> typeOptions;
     TDT4102::DropdownList typeDropdown;
     TDT4102::TextInput initialBalanceField;
