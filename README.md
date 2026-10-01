@@ -29,6 +29,12 @@ gui/            Login, dashboard and create-account screens
 main.cpp        Screen navigation loop
 ```
 
-## Requirements
+## Build and run
+Requirements:
 - C++23 compiler
 - Meson
+```bash
+meson setup build
+meson compile -C build
+./build/program   # run from the project root
+```
