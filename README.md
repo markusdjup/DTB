@@ -5,6 +5,8 @@ Course project for TDT4102: Prosedyre- og objektorientert programmering (C++)
 A simple banking simulator where users can register, log in, create checking and savings accounts 
 and deposit, withdraw and transfer funds through a GUI. Data is saved between sessions.
 
+![Dashboard](images/dashboard.png)
+
 ## Features
 - **Users:** Registration and login with input validation
 - **Accounts:** Savings accounts (with interest) and checking accounts (with overdraft limits)
@@ -13,10 +15,10 @@ and deposit, withdraw and transfer funds through a GUI. Data is saved between se
 - **GUI:** Login, dashboard and account-creation screens with error and status messages. Uses AnimationWindow library
 
 ## Technical highlights
-- **OOP:** An abstract class 'BankAccount' with 'SavingsAccount' and 'CheckingAccount' overriding rules for withdrawing through polymorphism
-- **Encapsulation:** Balances can only be changed through the 'Ledger', and account setters are private and exposed only to Ledger via 'friend'
-- **Safe money handling:** Amounts are stored in cents/øre as 'long long' to avoid float errors
-- **Error handling:** Custom exceptions that the GUI catches and shows the user (for example 'InsufficientFunds' or 'UserAlreadyExists')
+- **OOP:** An abstract class `BankAccount` with `SavingsAccount` and `CheckingAccount` overriding rules for withdrawing through polymorphism
+- **Encapsulation:** Balances can only be changed through the `Ledger`, and account setters are private and exposed only to Ledger via `friend`
+- **Safe money handling:** Amounts are stored in cents/øre as `long long` to avoid float errors
+- **Error handling:** Custom exceptions that the GUI catches and shows the user (for example `InsufficientFunds` or `UserAlreadyExists`)
 
 ## Project structure
 ```
