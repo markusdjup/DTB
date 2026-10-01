@@ -8,6 +8,7 @@ int main()
 {
     Ledger l;
     User u;
+    std::cout << "Starting up" << std::endl;
     std::optional<std::string> nextScreen = "Login";
 
     while (nextScreen.has_value())
